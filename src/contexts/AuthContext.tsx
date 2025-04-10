@@ -1,56 +1,93 @@
-/* eslint-disable react-refresh/only-export-components */
 import { createContext, useState, useEffect } from "react";
-import { User } from "@supabase/supabase-js"; // Import User type from Supabase
-import { supabase } from "../services/supabaseClient"; // Import your Supabase client instance
+import { User } from "@supabase/supabase-js";
+import { supabase } from "../services/supabaseClient";
 import { ReactNode } from "react";
-
 import { toast } from "react-hot-toast";
+import { useLocation, useNavigate } from "react-router-dom";
 
-export const AuthContext = createContext({user:null} as AuthContextType);
+// eslint-disable-next-line react-refresh/only-export-components
+export const AuthContext = createContext({ user: null } as AuthContextType);
 
 interface AuthContextType {
-    user: User | null;
-    // ... other properties if any
+  user: User | null;
 }
 
-
-
-
-
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
-   
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [checkedRoute, setCheckedRoute] = useState(false); // novo controle
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        // Listener para mudanças no estado de autenticação
-        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-            setUser(session?.user || null);
+  // Busca sessão ao iniciar
+  useEffect(() => {
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUser(data.session?.user ?? null);
+      setLoading(false);
+    };
+    getSession();
+  }, []);
 
-            // Opcional: Adicionar redirecionamento e feedback ao usuário
-            if (event === "SIGNED_IN") {
-                const shouldShowToast = localStorage.getItem("showLoginToast")
-                if (shouldShowToast) {
-                    toast.success("Login realizado com sucesso");
-                    localStorage.removeItem("showLoginToast"); // Remove o item após mostrar o toast
-                    
-                }
-                
-            } else if (event === "SIGNED_OUT") {
-                toast.success("Logout realizado com sucesso");
-                
-            }
-        });
+  // Listener de login/logout
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
 
-        // Cleanup: Cancela a inscrição no listener
-        return () => {
-            authListener.subscription.unsubscribe();
-        };
-    }, []);
+      if (event === "SIGNED_IN") {
+        const shouldShowToast = localStorage.getItem("showLoginToast");
+        if (shouldShowToast) {
+          toast.success("Login realizado com sucesso");
+          localStorage.removeItem("showLoginToast");
+        }
+      } else if (event === "SIGNED_OUT") {
+        toast.success("Logout realizado com sucesso");
+      }
+    });
 
-    return (
-        <AuthContext.Provider value={{ user }}>
-            {children}
-        </AuthContext.Provider>
-    );
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  // Remove o token ao fechar aba
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      for (const key in localStorage) {
+        if (key.startsWith("sb-") && key.includes("-auth-token")) {
+          localStorage.removeItem(key);
+        }
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  // Protege rota e exibe toast
+  useEffect(() => {
+    if (!loading && !user && location.pathname !== "/login") {
+      if (!checkedRoute) {
+        toast.error("Você precisa estar logado para acessar a página.");
+        setCheckedRoute(true); // impede múltiplas execuções
+        navigate("/login", { replace: true });
+      }
+    } else if (user) {
+      setCheckedRoute(false); // reseta controle ao logar
+    }
+  }, [user, loading, location.pathname, checkedRoute, navigate]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <AuthContext.Provider value={{ user }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
+
+export default AuthProvider;

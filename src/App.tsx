@@ -5,10 +5,21 @@ import Login from "./pages/login/Login"
 import { Cadastro } from "./pages/cadastro"
 import { Dashboard } from "./pages/dashboard"
 import { Controle } from "./pages/controlPM"
+import AuthProvider from "./contexts/AuthContext"
+import MonthsContextProvider from "./contexts/MonthsContext"
+import TableProvider from "./contexts/TableContext"
 
 const router = createBrowserRouter([
   {
-    element: <Layout/>,
+    element: (
+      <AuthProvider>
+        <MonthsContextProvider>
+          <TableProvider>
+            <Layout />
+          </TableProvider>
+        </MonthsContextProvider>
+      </AuthProvider>
+    ), 
     children: [
       {
         path: "/",

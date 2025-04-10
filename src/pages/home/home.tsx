@@ -19,7 +19,11 @@ export function Home(){
    
    const { user } = useContext(AuthContext) as AuthContextType;
      if (!user) {
-       return <div className="flex justify-center mt-20 text-xl font-bold h-screen">Faça login para acessar este conteúdo.</div>;
+       return <div className="flex flex-col items-center  mt-20 h-screen">
+        <h1 className="text-xl font-medium mb-15 mt-10">Faça login para acessar este conteúdo.</h1>
+        <p>	Login teste: teste@teste.com</p>
+        <p> Senha: 12341234</p>
+        </div>;
      }
     
         return(
