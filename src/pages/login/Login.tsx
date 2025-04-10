@@ -16,7 +16,7 @@ function Login(){
         if (error) {
             toast.error(error.message)
         }else{
-            
+            localStorage.setItem("showLoginToast", "true");
             navigate("/")
         }
     

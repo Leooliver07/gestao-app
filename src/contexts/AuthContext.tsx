@@ -29,8 +29,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             // Opcional: Adicionar redirecionamento e feedback ao usuário
             if (event === "SIGNED_IN") {
-                toast.success("Login realizado com sucesso");
-                
+                const shouldShowToast = localStorage.getItem("showLoginToast")
+                if (shouldShowToast) {
+                    toast.success("Login realizado com sucesso");
+                    localStorage.removeItem("showLoginToast"); // Remove o item após mostrar o toast
+                    
+                }
                 
             } else if (event === "SIGNED_OUT") {
                 toast.success("Logout realizado com sucesso");
