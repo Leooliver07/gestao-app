@@ -120,7 +120,7 @@ export function TableData({filterMonth, filterDate, table, }: TableDataProps) {
     return(
         
            <div className="bg-gray-100 w-full">
-                <div className="overflow-x-auto hidden sm:block w-full ">
+                <div className=" hidden sm:block w-full ">
                     <table className="table-fixed border-collapse border border-gray-400">
                     <thead >
                         <tr>

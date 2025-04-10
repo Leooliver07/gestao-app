@@ -31,7 +31,7 @@ export function Header(){
     return(
         
             <div className="flex flex-col  bg-pink-300 h-22 mb-5">
-                <header className=" my-3 flex flex-row  justify-between items-center">
+                <header className=" my-3 flex flex-row  justify-between items-center z-10 ">
                     <MonthsMenu/>
                        
                     
