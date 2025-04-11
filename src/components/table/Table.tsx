@@ -120,33 +120,76 @@ export function TableData({filterMonth, filterDate, table, }: TableDataProps) {
     return(
         
            <div className="bg-gray-100 w-full">
-                <div className=" hidden sm:block w-full ">
-                    <table className="table-fixed border-collapse border border-gray-400">
-                    <thead >
-                        <tr>
-                            <th className="border-2 border-gray-600 p-1 rounded-2xl">Data</th>
-                            <th className="border-2 border-gray-600">Cliente</th>
-                            <th className="border-2 border-gray-600">Tema</th>
-                            <th className="border-2 border-gray-600">Local</th>
-                            <th className="border-2 border-gray-600 p-1">Preço</th>
-                            <th className="border-2 border-gray-600 p-1">Custo</th>
-                            <th className="border-2 border-gray-600 p-1">Lucro</th>
+                <div className="hidden sm:block w-full">
+                    <table className="table-auto w-full bg-pink-50 shadow-lg rounded-lg overflow-hidden">
+                    <thead>
+                        <tr className="bg-pink-200 text-gray-700 text-center">
+                        <th className="py-3 px-6 border-b border-pink-300">Data</th>
+                        <th className="py-3 px-6 border-b border-pink-300">Cliente</th>
+                        <th className="py-3 px-6 border-b border-pink-300">Tema</th>
+                        <th className="py-3 px-6 border-b border-pink-300">Local</th>
+                        <th className="py-3 px-6 border-b border-pink-300">Preço</th>
+                        <th className="py-3 px-6 border-b border-pink-300">Custo</th>
+                        <th className="py-3 px-6 border-b border-pink-300">Lucro</th>
+                        <th className="py-3 px-6 border-b border-pink-300">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                
                         {filteredTable.map((row) => (
-                            <tr key={row.id}>
-                                <td className="border-2 border-gray-500 p-2">{formatDate(row.date)}</td>
-                                <td className="border-2 border-gray-500 p-2">{row.client}</td>
-                                <td className="border-2 border-gray-500 p-2">{row.theme}</td>
-                                <td className="border-2 border-gray-500 p-2">{row.location}</td>
-                                <td className="border-2 border-gray-500 p-2">R${row.price}</td>
-                                <td className="border-2 border-gray-500 p-2">R${row.cost}</td>
-                                <td className="border-2 border-gray-500 p-2">R${row.profit}</td>
-                            </tr>
+                        <tr
+                            key={row.id}
+                            className="hover:bg-pink-100 transition-colors duration-200"
+                        >
+                            <td className="py-3 px-6 text-center border-b border-pink-300">
+                            {formatDate(row.date)}
+                            </td>
+                            <td className="py-3 px-6 text-center border-b border-pink-300">
+                            {row.client}
+                            </td>
+                            <td className="py-3 px-6 text-center border-b border-pink-300">
+                            {row.theme}
+                            </td>
+                            <td className="py-3 px-6 text-center border-b border-pink-300">
+                            {row.location}
+                            </td>
+                            <td className="py-3 px-6 text-center border-b border-pink-300">
+                            R${row.price}
+                            </td>
+                            <td className="py-3 px-6 text-center border-b border-pink-300">
+                            R${row.cost}
+                            </td>
+                            <td className="py-3 px-6 text-center border-b border-pink-300">
+                            R${row.profit}
+                            </td>
+                            <td className="text-center border-b border-pink-300">
+                            <span className="inline-block mx-1">
+                                <img
+                                className="w-4 h-5 cursor-pointer hover:scale-110 transition-transform duration-200"
+                                onClick={() => handleDelete(row.id)}
+                                src={deleteIcon}
+                                alt="Excluir"
+                                />
+                            </span>
+                            <span className="inline-block mx-1">
+                                <img
+                                className="w-4 h-5 cursor-pointer hover:scale-110 transition-transform duration-200"
+                                onClick={() => handleEdit(row.id)}
+                                src={editIcon}
+                                alt="Editar"
+                                />
+                            </span>
+                            <span className="inline-block mx-1">
+                                <img
+                                className="w-4 h-5 cursor-pointer hover:scale-110 transition-transform duration-200"
+                                onClick={() => {/* Implemente a função para gerar contrato PDF */}
+                                }
+                                src={contractIcon}
+                                alt="Contrato"
+                                />
+                            </span>
+                            </td>
+                        </tr>
                         ))}
-                
                     </tbody>
                     </table>
                 </div>

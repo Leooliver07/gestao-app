@@ -141,8 +141,8 @@ export function Cadastro() {
 
   return (
     <>
-      <div className="bg-gray-100 min-h-screen mt-20">
-        <div className="max-w-xl flex items-center justify-center bg-pink-50 mx-auto">
+      <div className="bg-white min-h-screen mt-20">
+        <div className="max-w-xl flex items-center justify-center bg-pink-50 mx-auto rounded-2xl shadow-lg p-10">
           <form className="mx-10 mt-4" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
               <div>
