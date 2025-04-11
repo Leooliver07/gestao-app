@@ -38,7 +38,7 @@ export function Controle(){
     )}
     return (
         <>
-            <div className="flex flex-col items-center mt-20 text-lg font-medium h-screen">
+            <div className="flex flex-col items-center mt-20 text-lg font-medium ">
                 
                 <h2>Faça login para acessar este conteúdo.</h2>
                 <p className="text-sm">Login: teste@teste.com</p>
