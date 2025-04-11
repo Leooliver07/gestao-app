@@ -5,7 +5,6 @@ import { useContext, useState } from "react";
 import {supabase } from "../../services/supabaseClient";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../contexts/AuthContext";
-import Footer from "../../components/footer";
 
 
 
@@ -136,7 +135,11 @@ export function Cadastro() {
   // Verifica autenticação do usuário
   const { user } = useContext(AuthContext) as AuthContextType;
   if (!user) {
-    return <div className="flex justify-center mt-20 text-xl font-bold h-screen">Faça login para acessar este conteúdo.</div>;
+    return <div className="flex flex-col items-center mt-20 text-lg font-medium h-screen">
+      <h2>Faça login para acessar este conteúdo.</h2>
+      <p className="text-sm">Login: teste@teste.com</p>
+      <p className="text-sm">Senha: 12341234</p>
+      </div>;
   }
 
   return (
@@ -263,9 +266,7 @@ export function Cadastro() {
         </div>
         
       </div>
-      <div>
-        <Footer/>
-      </div>
+     
     </>
   );
 }

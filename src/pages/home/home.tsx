@@ -11,6 +11,7 @@ interface AuthContextType {
 export function Home(){
     const {month} = useContext(MonthsContext);
     const {table, refreshTable, setCurrentTable} = useContext(TableContext);
+    const tableName = "montagem";
     useEffect(() => {
         const shouldShowToast = localStorage.getItem("showLoginToast");
         if (shouldShowToast) {
@@ -41,7 +42,7 @@ export function Home(){
                     </div>
                     <div className="flex items-center justify-center  max-w-xl bg-gray-100">
                         <div className=" bg-gray-100  flex flex-col gap-6">
-                            <TableData table={table} filterMonth={month}/>
+                            <TableData table={table} filterMonth={month} tableName={tableName}/>
                     
                     </div>
 

@@ -19,10 +19,10 @@ interface TableDataProps {
     filterMonth?: string | null;
     filterDate?: string | null;
     table?: Table[];
-    onDeleteProp?: (id: number, tableName: string) => void;
-    
+    onDeleteProp?: (id: number, tableName: string | null) => void;
+    tableName?: string; 
 }
-export function TableData({filterMonth, filterDate, table, }: TableDataProps) {
+export function TableData({filterMonth, filterDate, table,tableName }: TableDataProps) {
     const {table : contextTable} = useContext(TableContext);
     const [activeCardId, setActiveCardId] = useState<number | null>(null);
    
@@ -91,7 +91,11 @@ export function TableData({filterMonth, filterDate, table, }: TableDataProps) {
     //Funcao para excluir item do supabase
     
     async function handleDelete(id: number) {
-        const {error} = await supabase.from('montagem').delete().eq('id', id);
+        if (!tableName) {
+            console.error('Erro: tableName não está definido.');
+            return;
+        }
+        const {error} = await supabase.from(tableName).delete().eq('id', id);
         if (error) {
             console.error('Erro ao excluir o item:', error.message);
         }
@@ -99,7 +103,7 @@ export function TableData({filterMonth, filterDate, table, }: TableDataProps) {
             console.log('Item excluído com sucesso!');
         }
         // Atualizar a tabela após a exclusão   
-        const {error: fetchError} = await supabase.from('montagem').select('*');
+        const {error: fetchError} = await supabase.from(tableName).select('*');
         if (fetchError) { 
             console.error('Erro ao buscar os dados atualizados:', fetchError.message);
         }

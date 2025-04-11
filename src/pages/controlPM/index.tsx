@@ -4,6 +4,7 @@ import { useEffect, useContext, useState } from "react";
 import { TableContext } from "../../contexts/TableContext";
 import { AuthContext } from "../../contexts/AuthContext";
 
+
 interface AuthContextType {
     user: { id: string; email: string } | null;
   }
@@ -12,7 +13,7 @@ export function Controle(){
     const {table, refreshTable, setCurrentTable} = useContext(TableContext);
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const { user } = useContext(AuthContext) as AuthContextType;
-    
+    const tableName = "PM";
 
    
     useEffect(()=>{
@@ -30,14 +31,20 @@ export function Controle(){
                     <Calendar onDateSelect={setSelectedDate}></Calendar>
                 </div>
                 <div className="mt-10">
-                    <TableData table={table} filterDate={selectedDate}></TableData>
+                    <TableData table={table} filterDate={selectedDate} tableName={tableName}></TableData>
                 </div>
             </div>
         </>
     )}
     return (
-        <div className="flex justify-center mt-20 h-screen">
-            <h1 className="text-2xl font-bold">Você não está logado</h1>
-        </div>
+        <>
+            <div className="flex flex-col items-center mt-20 text-lg font-medium h-screen">
+                
+                <h2>Faça login para acessar este conteúdo.</h2>
+                <p className="text-sm">Login: teste@teste.com</p>
+                <p className="text-sm">Senha: 12341234</p>
+            </div>
+            
+        </>
     )
 }
