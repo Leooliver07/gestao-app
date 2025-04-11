@@ -21,13 +21,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Busca sessão ao iniciar
   useEffect(() => {
-    const getSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setUser(data.session?.user ?? null);
-      setLoading(false);
-    };
-    getSession();
-  }, []);
+      const fetchData = async () => {
+    const { data } = await supabase.auth.getSession();
+    setUser(data.session?.user ?? null);
+    setLoading(false);
+  };
+
+  fetchData();
+
+  const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    setUser(session?.user ?? null);
+    setLoading(false);
+  });
+
+  return () => {
+    authListener.subscription.unsubscribe();
+  };
+}, []);;
 
   // Listener de login/logout
   useEffect(() => {
@@ -51,26 +61,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Remove o token ao fechar aba
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      for (const key in localStorage) {
-        if (key.startsWith("sb-") && key.includes("-auth-token")) {
-          localStorage.removeItem(key);
-        }
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  
 
   // Protege rota e exibe toast
   useEffect(() => {
     if (!loading && !user && location.pathname !== "/login") {
       if (!checkedRoute) {
-        toast.error("Você precisa estar logado para acessar a página.");
+        
         setCheckedRoute(true); // impede múltiplas execuções
         navigate("/login", { replace: true });
       }
