@@ -25,7 +25,7 @@ export function Controle(){
 
     return(
         <>
-            <div className="mt-12 flex flex-col items-center">
+            <div className="mt-12 flex flex-col items-center h-screen">
                 <h1 className="text-2xl font-bold mb-10">Pegue e monte</h1>
                 <div>
                     <Calendar onDateSelect={setSelectedDate}></Calendar>
@@ -38,7 +38,7 @@ export function Controle(){
     )}
     return (
         <>
-            <div className="flex flex-col items-center mt-20 text-lg font-medium ">
+            <div className="flex flex-col items-center mt-20 text-lg font-medium h-screen">
                 
                 <h2>Faça login para acessar este conteúdo.</h2>
                 <p className="text-sm">Login: teste@teste.com</p>

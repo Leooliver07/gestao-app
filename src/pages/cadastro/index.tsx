@@ -135,7 +135,7 @@ export function Cadastro() {
   // Verifica autenticação do usuário
   const { user } = useContext(AuthContext) as AuthContextType;
   if (!user) {
-    return <div className="flex flex-col items-center mt-20 text-lg font-medium ">
+    return <div className="flex flex-col items-center mt-20 text-lg font-medium h-screen ">
       <h2>Faça login para acessar este conteúdo.</h2>
       <p className="text-sm">Login: teste@teste.com</p>
       <p className="text-sm">Senha: 12341234</p>
@@ -144,7 +144,7 @@ export function Cadastro() {
 
   return (
     <>
-      <div className="bg-white min-h-screen mt-20">
+      <div className="bg-gray-100 flex flex-col items-center min-h-screen mt-20">
         <div className="max-w-xl flex items-center justify-center bg-pink-50 mx-auto rounded-2xl shadow-lg p-10">
           <form className="mx-10 mt-4" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">

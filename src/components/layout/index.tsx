@@ -8,7 +8,11 @@ export function Layout(){
         <>
             <div className="flex flex-col min-h-screen bg-gray-100">
                 <Toaster position="top-right" />
-                <Header/>
+                <header className="mb-10">
+                  <Header/>
+                </header>             
+                
+
 
                 <main className="flex-grow">
                     <Outlet/>
