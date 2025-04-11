@@ -76,6 +76,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user, loading, location.pathname, checkedRoute, navigate]);
 
+  
+
   if (loading) {
     return <div>Loading...</div>;
   }

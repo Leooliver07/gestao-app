@@ -3,7 +3,7 @@ import { MonthsContext } from "../../contexts/MonthsContext"
 import { useEffect, useContext } from "react";
 import { TableContext } from "../../contexts/TableContext";
 import { AuthContext } from "../../contexts/AuthContext";
-
+import { toast } from "react-hot-toast";
 interface AuthContextType {
     user: { id: string; email: string } | null;
   }
@@ -11,7 +11,14 @@ interface AuthContextType {
 export function Home(){
     const {month} = useContext(MonthsContext);
     const {table, refreshTable, setCurrentTable} = useContext(TableContext);
-       
+    useEffect(() => {
+        const shouldShowToast = localStorage.getItem("showLoginToast");
+        if (shouldShowToast) {
+            toast.success("Login realizado com sucesso");
+            localStorage.removeItem("showLoginToast");
+        }
+    }, []);   
+    
     useEffect(()=>{
         setCurrentTable("montagem");
         refreshTable("montagem");
