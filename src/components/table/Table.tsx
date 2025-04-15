@@ -4,11 +4,29 @@ import deleteIcon from "../../assets/delete.png";
 import editIcon from "../../assets/edit.png";
 import contractIcon from "../../assets/contract.png";
 import { supabase } from "../../services/supabaseClient";
+import EditModal from "../EditModal/EditModal";
+import toast from "react-hot-toast";
 
-interface Table {
+interface AgendaData {
+  id: number; // Será gerado automaticamente pelo Supabase
+  client: string;
+  cpf: string;
+  phone: string;
+  location: string;
+  theme: string;
+  price: number | null;
+  cost: number | null;
+  date: string;
+  profit: number;
+  serviceType: "montagem" | "PM";
+}
+interface Table{
     id: number;
     date: string;
     client: string;
+    cpf?: string | null;
+    phone?: string | null;
+    serviceType?: string | null;
     theme: string;
     location: string;
     price: number | null;
@@ -20,14 +38,19 @@ interface TableDataProps {
     filterDate?: string | null;
     table?: Table[];
     onDeleteProp?: (id: number, tableName: string | null) => void;
+    onEditProp?: (id: number, tableName: string | null) => void;
     tableName?: string; 
 }
-export function TableData({filterMonth, filterDate, table,tableName }: TableDataProps) {
+
+
+
+ export function TableData({filterMonth, filterDate, table,tableName }: TableDataProps) {
     const {table : contextTable} = useContext(TableContext);
     const [activeCardId, setActiveCardId] = useState<number | null>(null);
-   
     const dataSource = table || contextTable;
-    
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editData, setEditData] = useState<AgendaData | null>(null);
+   
     const filteredTable = useMemo(()=>{
         let result = [...dataSource];
             
@@ -75,7 +98,7 @@ export function TableData({filterMonth, filterDate, table,tableName }: TableData
   
     if(filteredTable.length === 0){
         if (filterDate){
-            return <div>Nenhum dado encontrado para a data {filterDate}</div>
+            return <div>Nenhum dado encontrado para a data {formatDate(filterDate)}</div>
         } else if (filterMonth){
             return <div>Nenhum dado encontrado para o mês de {filterMonth}</div>
         } else {
@@ -112,15 +135,43 @@ export function TableData({filterMonth, filterDate, table,tableName }: TableData
         }
     }
     // ✏️ Editar item
-    async function handleEdit(id: number) { 
-        const {error} = await supabase.from('table').update({}).eq('id', id);
-        if (error) {
-            console.error('Erro ao editar o item:', error.message);
-        }
-        else {
-            console.log('Item editado com sucesso!');
-        }
+    
+
+    const handleEdit = (data: AgendaData) => {
+        setEditData(data);
+        setIsModalOpen(true);
     }
+
+    const handleSave = async (updatedData: AgendaData) => {
+        const {id, ...dataToUpdate} = updatedData;
+        if (!tableName) {
+            console.error('Erro: tableName não está definido.');
+            return;
+        }
+        const {error} = await supabase.from(tableName).update(dataToUpdate).eq('id', id);
+        if(!error) {
+            toast.success('Item atualizado com sucesso!');
+            setIsModalOpen(false);
+            
+        }
+    };
+    const parseTableToAgendaData = (row: Table): AgendaData => {
+        return {
+            id: row.id,
+            client: row.client,
+            cpf: row.cpf ?? "", // se vier null ou undefined, vira string vazia
+            phone: row.phone ?? "",
+            location: row.location,
+            theme: row.theme,
+            price: row.price,
+            cost: row.cost,
+            date: row.date,
+            profit: row.profit,
+            serviceType: (row.serviceType === "montagem" || row.serviceType === "PM") 
+            ? row.serviceType 
+            : "montagem", // valor padrão caso não seja reconhecido
+  };
+};
     return(
         
            <div className="bg-gray-100 w-full">
@@ -177,7 +228,7 @@ export function TableData({filterMonth, filterDate, table,tableName }: TableData
                             <span className="inline-block mx-1">
                                 <img
                                 className="w-4 h-5 cursor-pointer hover:scale-110 transition-transform duration-200"
-                                onClick={() => handleEdit(row.id)}
+                                onClick={() => handleEdit(parseTableToAgendaData(row))}
                                 src={editIcon}
                                 alt="Editar"
                                 />
@@ -217,16 +268,23 @@ export function TableData({filterMonth, filterDate, table,tableName }: TableData
                                  ${activeCardId === row.id ? "opacity-100 translate-x-full" : "opacity-0 translate-x-0 pointer-events-none"}`}
                                 >                                
                                 <span><img className="w-5 h-6 cursor-pointer  hover:scale-110 hover:transition-all duration-500" onClick={()=> handleDelete(row.id)}  src={deleteIcon} alt="trash" /></span>
-                                <span><img className="w-5 h-6 cursor-pointer hover:scale-110 hover:transition-all duration-500" onClick={()=> handleEdit(row.id)} src={editIcon} alt="edit" /></span> 
+                                <span><img className="w-5 h-6 cursor-pointer hover:scale-110 hover:transition-all duration-500" onClick={()=> handleEdit(parseTableToAgendaData(row))} src={editIcon} alt="edit" /></span> 
                                 <span><img className="w-5 h-6 cursor-pointer hover:scale-110 hover:transition-all duration-500"  src={contractIcon} alt="contract" /></span>
                             </div>
-                        </div>
+                         </div>
                         ))}
-
-                </div>
+                    </div>
+                     {editData && (
+                                <EditModal
+                                    isOpen={isModalOpen}
+                                    onClose={() => setIsModalOpen(false)}
+                                    data={editData}
+                                    onSave={handleSave}
+                                />
+                            )}
             </div>
-           
-        
-    )
+       );
 }
 export default TableData;
+
+
