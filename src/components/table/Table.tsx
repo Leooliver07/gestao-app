@@ -18,15 +18,15 @@ interface AgendaData {
   cost: number | null;
   date: string;
   profit: number;
-  serviceType: "montagem" | "PM";
+  serviceType?: "montagem" | "PM";
 }
-interface Table{
+interface Table {
     id: number;
     date: string;
     client: string;
-    cpf?: string | null;
-    phone?: string | null;
-    serviceType?: string | null;
+    cpf?: string; // This property is required
+    phone?: string; // This property is required
+    serviceType?: "montagem" | "PM"; // This property is required
     theme: string;
     location: string;
     price: number | null;
@@ -51,6 +51,22 @@ interface TableDataProps {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editData, setEditData] = useState<AgendaData | null>(null);
    
+
+    const tableToAgendaData = (tableRow: Table): AgendaData => {
+    return {
+        id: tableRow.id,
+        client: tableRow.client,
+        cpf: tableRow.cpf || "",
+        phone: tableRow.phone || "",
+        location: tableRow.location,
+        theme: tableRow.theme,
+        price: tableRow.price,
+        cost: tableRow.cost,
+        date: tableRow.date,
+        profit: tableRow.profit,
+        
+        };
+    };
     const filteredTable = useMemo(()=>{
         let result = [...dataSource];
             
@@ -148,30 +164,19 @@ interface TableDataProps {
             console.error('Erro: tableName não está definido.');
             return;
         }
+        console.log("Data to update: ", dataToUpdate);
         const {error} = await supabase.from(tableName).update(dataToUpdate).eq('id', id);
         if(!error) {
+            
             toast.success('Item atualizado com sucesso!');
             setIsModalOpen(false);
             
+        }else{
+            console.error('Erro ao atualizar o item:', error.message);
+            toast.error('Erro ao atualizar o item');
         }
     };
-    const parseTableToAgendaData = (row: Table): AgendaData => {
-        return {
-            id: row.id,
-            client: row.client,
-            cpf: row.cpf ?? "", // se vier null ou undefined, vira string vazia
-            phone: row.phone ?? "",
-            location: row.location,
-            theme: row.theme,
-            price: row.price,
-            cost: row.cost,
-            date: row.date,
-            profit: row.profit,
-            serviceType: (row.serviceType === "montagem" || row.serviceType === "PM") 
-            ? row.serviceType 
-            : "montagem", // valor padrão caso não seja reconhecido
-  };
-};
+   
     return(
         
            <div className="bg-gray-100 w-full">
@@ -228,7 +233,7 @@ interface TableDataProps {
                             <span className="inline-block mx-1">
                                 <img
                                 className="w-4 h-5 cursor-pointer hover:scale-110 transition-transform duration-200"
-                                onClick={() => handleEdit(parseTableToAgendaData(row))}
+                                onClick={() => handleEdit(tableToAgendaData(row))}
                                 src={editIcon}
                                 alt="Editar"
                                 />
@@ -268,7 +273,7 @@ interface TableDataProps {
                                  ${activeCardId === row.id ? "opacity-100 translate-x-full" : "opacity-0 translate-x-0 pointer-events-none"}`}
                                 >                                
                                 <span><img className="w-5 h-6 cursor-pointer  hover:scale-110 hover:transition-all duration-500" onClick={()=> handleDelete(row.id)}  src={deleteIcon} alt="trash" /></span>
-                                <span><img className="w-5 h-6 cursor-pointer hover:scale-110 hover:transition-all duration-500" onClick={()=> handleEdit(parseTableToAgendaData(row))} src={editIcon} alt="edit" /></span> 
+                                <span><img className="w-5 h-6 cursor-pointer hover:scale-110 hover:transition-all duration-500" onClick={()=> handleEdit(tableToAgendaData(row))} src={editIcon} alt="edit" /></span> 
                                 <span><img className="w-5 h-6 cursor-pointer hover:scale-110 hover:transition-all duration-500"  src={contractIcon} alt="contract" /></span>
                             </div>
                          </div>
@@ -286,5 +291,3 @@ interface TableDataProps {
        );
 }
 export default TableData;
-
-

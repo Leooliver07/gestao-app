@@ -14,7 +14,7 @@ interface AgendaData {
   cost: number | null;
   date: string;
   profit: number;
-  serviceType: "montagem" | "PM";
+  serviceType?: "montagem" | "PM";
 }
 
 interface EditModalProps {
@@ -25,22 +25,15 @@ interface EditModalProps {
 }
 
 export function EditModal({ isOpen, onClose, data, onSave }: EditModalProps) {
-  const [formData, setFormData] = useState<AgendaData>({
-    ...data,
-    serviceType: data.serviceType || "montagem",
-  });
+  const [formData, setFormData] = useState<AgendaData>(data);
   // Manipula mudanças nos inputs
   useEffect(() => {
-    setFormData({
-      ...data,
-      serviceType: data.serviceType || "montagem",
-      
-  });
+    setFormData(data);
   }, [data]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {  
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
        [name]: name === 'price' || name === 'cost' ? Number(value) : value,
   }));
@@ -149,33 +142,7 @@ export function EditModal({ isOpen, onClose, data, onSave }: EditModalProps) {
                                 />
                               </div>
                             </div>
-                            <div className="mt-10 flex flex-col items-center">
-                              <legend className="font-bold mb-4">Tipo de serviço</legend>
-                              <div className="flex gap-8">
-                                <div>
-                                  <input
-                                    type="radio"
-                                    id="montagem"
-                                    name="serviceType"
-                                    value="montagem"
-                                    checked={formData.serviceType === "montagem"}
-                                    onChange={handleChange}
-                                  />
-                                  <label htmlFor="montagem"> Montagem</label>
-                                </div>
-                                <div>
-                                  <input
-                                    type="radio"
-                                    id="PM"
-                                    name="serviceType"
-                                    value="PM"
-                                    checked={formData.serviceType === "PM"}
-                                    onChange={handleChange}
-                                  />
-                                  <label htmlFor="PM"> Pegue e monte</label>
-                                </div>
-                              </div>
-                            </div>
+                            
                             
               </form>
               <div className='flex justify-center  gap-5 mt-10'>
