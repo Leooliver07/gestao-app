@@ -4,6 +4,7 @@ import { useEffect, useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { toast } from "react-hot-toast";
 import { SendMessage } from "../../components/sendMessage/sendMessage";
+import { ImportContact } from "../../components/importcontact";
 interface AuthContextType {
     user: { id: string; email: string } | null;
   }
@@ -38,6 +39,8 @@ export function Home(){
                     </div>
                     <div className="flex items-center justify-center  max-w-xl bg-gray-100">
                         <div className=" bg-gray-100  flex flex-col gap-6">
+                            <ImportContact />
+                           
                             <SendMessage />
                     
                     </div>
