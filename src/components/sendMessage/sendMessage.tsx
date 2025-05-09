@@ -5,14 +5,7 @@ export function SendMessage() {
 
     return (
         <div className="flex flex-col items-center bg-gray-100 h-dvh w-full px-4">
-           <div>
-            {/* if(whatsapp not connected)  show this message*/}
-                <h2>Conecte seu whatsapp no menu de configuracoes...
-                    <span className="text-blue-500 cursor-pointer">
-                        Clique aqui para configurar
-                    </span>
-                </h2>
-            </div>
+         
              {/* if(whatsapp connected)  show this message*/}
              <div>
 
