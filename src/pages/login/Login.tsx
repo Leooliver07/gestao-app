@@ -46,7 +46,7 @@ function Login(){
                 />
                 <button 
                     type="submit"
-                    className="bg-pink-500 text-white rounded-md p-2"
+                    className="bg-blue-500 text-white rounded-md p-2"
                     onClick={() => signIn(email, password)}
                 >
                     Login

@@ -25,6 +25,7 @@ interface TableProviderProps {
 }
 
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const TableContext = createContext({} as TableContextData);
 
 export function TableProvider({children} : TableProviderProps){
